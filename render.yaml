@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: alexandria-hostels
+    env: python
+    branch: master
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn alexandria_hostels.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: alexandria_hostels.settings
+      - key: SECRET_KEY
+        value: w%t1p*a((d5jtk6es9hogjl#f=_1o3ftjithbt_1xv*ebcr!5a
+      - key: ALLOWED_HOSTS
+        value: .onrender.com

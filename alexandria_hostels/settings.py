@@ -10,13 +10,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECRET KEY
 # It uses the environment variable if available, else uses a default unsafe key
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fbm&1u-j8j9ks*^@7hg!*=^5@bno7!buvntz@joqo5a*ge^rd^')
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'w%t1p*a((d5jtk6es9hogjl#f=_1o3ftjithbt_1xv*ebcr!5a')
 
 # DEBUG
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 # ALLOWED HOSTS
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = ['.onrender.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -37,6 +37,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'alexandria_hostels.urls'

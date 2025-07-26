@@ -1,0 +1,1 @@
+web:gunicorn alexandria_hostels.wsgi:application
