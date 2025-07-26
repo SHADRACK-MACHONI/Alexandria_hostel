@@ -1,0 +1,143 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alexandria Hostels | Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="{% static 'img/logo.png' %}">
+  <style>
+    @keyframes bgFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .animated-gradient {
+      background: linear-gradient(-45deg, #8B0000, #1e3a8a, #00008B, #ff0057);
+      background-size: 400% 400%;
+      animation: bgFlow 15s ease infinite;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 9999px;
+      opacity: 0.4;
+      animation: floatUp 20s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 0.5;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* Title Animation */
+    @keyframes titleWave {
+      0%, 100% { transform: scale(1) rotate(0deg); text-shadow: 0 0 10px rgba(255,255,255,0.6); }
+      25% { transform: scale(1.05) rotate(-1deg); text-shadow: 0 0 20px rgba(255,255,255,0.9); }
+      50% { transform: scale(1.1) rotate(1deg); text-shadow: 0 0 30px rgba(255,255,255,1); }
+      75% { transform: scale(1.05) rotate(-1deg); text-shadow: 0 0 20px rgba(255,255,255,0.8); }
+    }
+
+    .title-animate {
+      animation: titleWave 5s ease-in-out infinite;
+      display: inline-block;
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#b91c1c',
+            secondary: '#1e3a8a',
+            accent: '#fbbf24'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="animated-gradient text-white min-h-screen flex flex-col transition-all duration-500 ease-in-out relative">
+
+  <!-- Colorful Bubbles -->
+  <div class="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+    {% for i in "123456789" %}
+      <div class="bubble" style="
+        left: {{ forloop.counter0|add:'5' }}%;
+        width: {{ 10|add:forloop.counter0 }}px;
+        height: {{ 10|add:forloop.counter0 }}px;
+        background-color: hsl({{ forloop.counter0|add:'30' }}0, 80%, 60%);
+        animation-delay: -{{ forloop.counter0|add:'1' }}s;
+      "></div>
+    {% endfor %}
+  </div>
+
+  <!-- Navbar -->
+  <nav class="p-4 flex justify-between items-center bg-white bg-opacity-20 backdrop-blur-md shadow-md rounded-b-lg z-10">
+    <div class="flex items-center gap-4">
+      <!-- Dashboard Icon -->
+      <button onclick="toggleDashboard()" class="w-10 h-10 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-secondary transition">
+        ☰
+      </button>
+    </div>
+    <div>
+      <span class="text-xs text-white tracking-wide">Alexandria Hostels</span>
+    </div>
+  </nav>
+
+  <!-- Dashboard Dropdown -->
+  <div id="dashboardMenu" class="hidden bg-white bg-opacity-90 text-gray-800 shadow-lg rounded-lg mx-4 mt-2 p-4 z-50">
+    <ul class="space-y-2 font-medium">
+      <li><a href="{% url 'dashboard' %}" class="hover:text-accent">Dashboard</a></li>
+      <li><a href="{% url 'resources' %}" class="hover:text-accent">Resources</a></li>
+      <li><a href="{% url 'rooms' %}" class="hover:text-accent">Room Booking</a></li>
+      <li><a href="{% url 'chat' %}" class="hover:text-accent">Chat</a></li>
+      <li><a href="{% url 'payments' %}" class="hover:text-accent">Payments</a></li>
+      <li><a href="{% url 'entertainment' %}" class="hover:text-accent">Entertainment</a></li>
+      <li><a href="{% url 'logout' %}" class="text-red-600 hover:underline">Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Hero Section -->
+  <header class="flex-1 flex flex-col justify-center items-center text-center px-4 z-10">
+    <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-4 drop-shadow-lg title-animate">
+      Welcome to Alexandria Hostels
+    </h1>
+    <p class="text-xl text-white/90 mb-6 max-w-2xl">
+      Discover a modern, secure, and connected lifestyle. Book rooms, chat with other tenants, and access your resources in one smart portal.
+    </p>
+    <div class="flex flex-col md:flex-row gap-4">
+      <a href="{% url 'register' %}" class="bg-secondary text-white px-6 py-3 rounded-full shadow-lg hover:bg-primary transition duration-300">
+        Register Now
+      </a>
+      <a href="{% url 'login' %}" class="bg-white text-secondary px-6 py-3 rounded-full shadow-lg hover:bg-secondary hover:text-white transition duration-300 border border-secondary">
+        Login
+      </a>
+    </div>
+  </header>
+
+  <!-- Footer -->
+  <footer class="bg-white bg-opacity-20 backdrop-blur-md text-center py-4 text-sm text-white/70 z-10">
+    &copy; {{ now.year }} Alexandria Hostels. All rights reserved.
+  </footer>
+
+  <script>
+    function toggleDashboard() {
+      document.getElementById('dashboardMenu').classList.toggle('hidden');
+    }
+  </script>
+</body>
+</html>

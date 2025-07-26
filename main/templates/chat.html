@@ -1,0 +1,245 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hostel Chatroom | Alexandria</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      background: linear-gradient(-45deg, #8B0000, #1e3a8a, #00008B, #ff0057);
+      background-size: 400% 400%;
+      animation: bgFlow 20s ease infinite;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    @keyframes bgFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 9999px;
+      opacity: 0.4;
+      animation: floatUp 20s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 0.5;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    .chat-container {
+      max-width: 960px;
+      margin: 60px auto;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      position: relative;
+      z-index: 1;
+    }
+
+    .chat-header {
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #fff;
+      border-bottom: 2px dashed #fff;
+      padding-bottom: 15px;
+    }
+
+    .chat-messages {
+      max-height: 420px;
+      overflow-y: auto;
+      margin-bottom: 30px;
+      padding-right: 10px;
+    }
+
+    .message {
+      padding: 15px 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      max-width: 75%;
+      position: relative;
+      animation: fadeIn 0.3s ease-in;
+      word-break: break-word;
+      color: #000;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .user {
+      background-color: #d1e7ff;
+      margin-left: auto;
+    }
+
+    .admin {
+      background-color: #ffe2e2;
+      margin-right: auto;
+    }
+
+    .message small {
+      font-size: 12px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+    .media-preview img {
+      max-width: 150px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .chat-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chat-form input[type="text"] {
+      flex-grow: 1;
+      height: 45px;
+      border-radius: 10px;
+      border: none;
+      padding: 0 15px;
+      font-size: 16px;
+    }
+
+    .chat-form input[type="file"] {
+      flex-shrink: 1;
+      background: transparent;
+      color: #fff;
+    }
+
+    .chat-form button {
+      background-color: #38bdf8;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      transition: 0.3s ease;
+    }
+
+    .chat-form button:hover {
+      background-color: #0ea5e9;
+    }
+
+    .dashboard-link {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .dashboard-link a {
+      font-weight: bold;
+      background-color: rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .dashboard-link a:hover {
+      background-color: rgba(255,255,255,0.25);
+    }
+
+    .double-tick {
+      color: #0ea5e9;
+      margin-left: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating Bubbles -->
+{% for i in "123456789" %}
+  <div class="bubble" style="
+    left: {{ forloop.counter0|add:'7' }}%;
+    width: {{ 12|add:forloop.counter0 }}px;
+    height: {{ 12|add:forloop.counter0 }}px;
+    background-color: hsl({{ forloop.counter0|add:'30' }}0, 80%, 60%);
+    animation-delay: -{{ forloop.counter0|add:'1' }}s;
+  "></div>
+{% endfor %}
+
+<div class="chat-container">
+  <div class="chat-header"><i class="fas fa-comments text-light"></i> Hostel Chatroom</div>
+
+  <div class="chat-messages" id="chatBox">
+    {% for message in chat_messages %}
+      <div class="message {% if message.sender.is_staff %}admin{% else %}user{% endif %}">
+        <strong><i class="fas fa-user-circle"></i> {{ message.sender.username }}</strong>
+        <div>{{ message.content }}</div>
+
+        {% if message.media %}
+          <div class="media-preview">
+            <a href="{{ message.media.url }}" target="_blank">
+              {% with file_url=message.media.url|lower %}
+                {% if ".jpg" in file_url or ".jpeg" in file_url or ".png" in file_url or ".gif" in file_url %}
+                  <img src="{{ message.media.url }}" alt="Media">
+                {% else %}
+                  <i class="fas fa-paperclip"></i> Attached File
+                {% endif %}
+              {% endwith %}
+            </a>
+          </div>
+        {% endif %}
+
+        <small>
+          {{ message.timestamp|date:"M d, H:i" }}
+          <span class="double-tick"><i class="fas fa-check-double"></i></span>
+        </small>
+      </div>
+    {% empty %}
+      <p class="text-center text-light">No messages yet. Be the first to say hello! 🎉</p>
+    {% endfor %}
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" class="chat-form">
+    {% csrf_token %}
+    <input type="text" name="message" placeholder="Type a message..." required>
+    <input type="file" name="media">
+    <button type="submit"><i class="fas fa-paper-plane"></i> Send</button>
+  </form>
+
+  <div class="dashboard-link">
+    <a href="{% url 'dashboard' %}"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+  </div>
+</div>
+
+<script>
+  // Auto-scroll to the bottom of chat
+  const chatBox = document.getElementById("chatBox");
+  chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+
+</body>
+</html>

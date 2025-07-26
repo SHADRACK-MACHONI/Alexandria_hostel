@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alexandria Hostels | Resources</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(-45deg, red, purple, indigo, violet, blue);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .glass {
+      backdrop-filter: blur(12px);
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen flex flex-col">
+
+  <header class="p-6 text-center glass mt-6 mx-4">
+    <h1 class="text-4xl font-bold tracking-widest">📚 Hostel Resources</h1>
+    <p class="text-sm mt-1 text-gray-200">Download notes, videos, and important materials.</p>
+  </header>
+
+  <main class="flex-grow py-10 px-6">
+    <div class="grid md:grid-cols-3 gap-6">
+      {% for resource in resources %}
+      <div class="glass p-5 rounded-xl transition transform hover:scale-105 duration-300">
+        <h2 class="text-2xl font-semibold mb-2">{{ resource.title }}</h2>
+        <p class="mb-3 text-gray-200">{{ resource.description }}</p>
+
+        {% if resource.file %}
+        <a href="{{ resource.file.url }}" download class="inline-block bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">⬇ Download</a>
+        {% endif %}
+
+        {% if resource.video_link %}
+        <a href="{{ resource.video_link }}" target="_blank" class="inline-block bg-purple-500 text-white px-4 py-2 mt-2 rounded hover:bg-purple-600 transition">▶ Watch Video</a>
+        {% endif %}
+
+        {% if resource.related_room_id %}
+        <a href="{% url 'book_room' resource.related_room_id %}" class="block mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">🛏 Book Room</a>
+        {% else %}
+        <span class="block mt-3 bg-gray-600 text-white px-4 py-2 rounded cursor-not-allowed opacity-70">🛏 Book Room</span>
+        {% endif %}
+      </div>
+      {% empty %}
+      <p class="text-center col-span-3 text-xl text-white">No resources available at the moment.</p>
+      {% endfor %}
+    </div>
+  </main>
+
+  <footer class="text-center p-4 text-gray-300 text-sm">
+    &copy; {{ year }} Alexandria Hostels. All rights reserved.
+  </footer>
+
+</body>
+</html>
