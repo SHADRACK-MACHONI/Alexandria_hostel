@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',  # your app
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -112,3 +113,18 @@ import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'chat_media'
+# settings.py
+
+# WebSocket support with Redis
+ASGI_APPLICATION = "alexandria_hostels.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+            "capacity": 1500,
+            "expiry": 10,
+        },
+    }
+}

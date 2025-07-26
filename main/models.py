@@ -139,8 +139,11 @@ class Resource(models.Model):
     def _str_(self):
         return self.title
 
+from django.db import models
+from django.contrib.auth.models import User
+
 # =============================
-# ChatRoom and ChatMessage
+# ChatRoom Model
 # =============================
 class ChatRoom(models.Model):
     name = models.CharField(max_length=100, help_text="Name of the chatroom (e.g., General, Admins, Tenants)")
@@ -148,13 +151,13 @@ class ChatRoom(models.Model):
     members = models.ManyToManyField(User, related_name='chatrooms')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):  # ✅ FIX: Use __str_ not str
         return self.name
 
-from django.db import models
-from django.contrib.auth.models import User
 
-
+# =============================
+# ChatMessage Model
+# =============================
 class ChatMessage(models.Model):
     room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='messages')
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
@@ -167,6 +170,5 @@ class ChatMessage(models.Model):
     class Meta:
         ordering = ['timestamp']
 
-    def _str_(self):
+    def __str__(self):  # ✅ FIX: Use __str_ not str
         return f"{self.sender.username} in {self.room.name}: {self.content[:30]}"
-    
