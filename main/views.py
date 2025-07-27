@@ -167,7 +167,7 @@ def chat_view(request):
             return redirect('chat')  # or redirect back to the same room
 
     messages = ChatMessage.objects.filter(room=room).order_by('timestamp')
-    return render(request, 'main/chat.html', {'messages': messages, 'room': room})
+    return render(request, 'main/chat.html', {'chat_messages': messages, 'room': room})
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
