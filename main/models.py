@@ -145,24 +145,50 @@ from django.contrib.auth.models import User
 # =============================
 # ChatRoom Model
 # =============================
+from django.db import models
+from django.contrib.auth.models import User
+
 class ChatRoom(models.Model):
-    name = models.CharField(max_length=100, help_text="Name of the chatroom (e.g., General, Admins, Tenants)")
-    is_group = models.BooleanField(default=True, help_text="Whether this is a group chat")
-    members = models.ManyToManyField(User, related_name='chatrooms')
+    name = models.CharField(
+        max_length=100,
+        help_text="Name of the chatroom (e.g., General, Admins, Tenants)"
+    )
+    is_group = models.BooleanField(
+        default=True,
+        help_text="Whether this is a group chat"
+    )
+    members = models.ManyToManyField(
+        User,
+        related_name='chatrooms',
+        help_text="Users who are members of this chatroom"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):  # ✅ FIX: Use __str_ not str
+    def _str_(self):
         return self.name
-
-
-# =============================
-# ChatMessage Model
-# =============================
 class ChatMessage(models.Model):
-    room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='messages')
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
-    content = models.TextField(blank=True, help_text="Text content of the message")
-    media = models.FileField(upload_to='chat_media/', blank=True, null=True, help_text="Optional media or image file")
+    room = models.ForeignKey(
+        ChatRoom,
+        on_delete=models.CASCADE,
+        related_name='messages',
+        help_text="Room where this message was sent"
+    )
+    sender = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='sent_messages',
+        help_text="User who sent the message"
+    )
+    content = models.TextField(
+        blank=True,
+        help_text="Text content of the message"
+    )
+    media = models.FileField(
+        upload_to='chat_media/',
+        blank=True,
+        null=True,
+        help_text="Optional image, file, or media"
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
     is_delivered = models.BooleanField(default=False)
     is_read = models.BooleanField(default=False)
@@ -170,5 +196,6 @@ class ChatMessage(models.Model):
     class Meta:
         ordering = ['timestamp']
 
-    def __str__(self):  # ✅ FIX: Use __str_ not str
-        return f"{self.sender.username} in {self.room.name}: {self.content[:30]}"
+    def _str_(self):
+        content_preview = self.content if self.content else "Media"
+        return f"{self.sender.username} in {self.room.name}: {content_preview[:30]}"

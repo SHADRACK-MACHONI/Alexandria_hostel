@@ -137,37 +137,38 @@ from django.contrib.auth.decorators import login_required
 def resource_list(request):
     resources = Resource.objects.all()
     return render(request, 'main/resources.html', {'resources': resources})
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import ChatMessage
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import ChatMessage
-
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import ChatMessage, ChatRoom
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def chat_view(request):
-    # For simplicity, assume you have one room or pass room_id in GET or URL
-    room = ChatRoom.objects.first()  # or use get_object_or_404(ChatRoom, id=some_id)
+    # Get the first chat room or handle dynamic room assignment
+    room = ChatRoom.objects.first()
+    if not room:
+        # Optional: Create a default room if none exist
+        room = ChatRoom.objects.create(name="Main Room")
 
     if request.method == 'POST':
         content = request.POST.get('message')
-        media = request.FILES.get('media')  # If handling file uploads
+        media = request.FILES.get('media')  # Optional media file
 
         if content or media:
             ChatMessage.objects.create(
                 room=room,
                 sender=request.user,
-                content=content or '',
+                content=content,
                 media=media
             )
-            return redirect('chat')  # or redirect back to the same room
+        return redirect('chat')  # Named URL for this view
 
+    # Fetch all messages for the current room
     messages = ChatMessage.objects.filter(room=room).order_by('timestamp')
-    return render(request, 'chat.html', {'chat_messages': messages, 'room': room})
+
+    return render(request, 'main/chat.html', {
+        'chat_messages': messages,
+        'room': room
+    })
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
