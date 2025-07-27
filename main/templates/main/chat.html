@@ -189,36 +189,29 @@
     animation-delay: -{{ forloop.counter0|add:'1' }}s;
   "></div>
 {% endfor %}
+
+<div class="chat-container">
+  <div class="chat-header"><i class="fas fa-comments text-light"></i> Hostel Chatroom</div>
+
   <div class="chat_messages" id="chatBox">
-     {% for message in chat_messages %}
+    {% for message in chat_messages %}
       <div class="message {% if message.sender.is_staff %}admin{% else %}user{% endif %}">
         <strong><i class="fas fa-user-circle"></i> {{ message.sender.username }}</strong>
-         <div>{{ message.content }}</div>
+        <div>{{ message.content }}</div>
 
         {% if message.media %}
-        <div class="media-preview">
-          <a href="{{ message.media.url }}" target="_blank">
-            {% with file_url=message.media.url|lower %}
-              {% if ".jpg" in file_url or ".jpeg" in file_url or ".png" in file_url or ".gif" in file_url %}
-                <img src="{{ message.media.url }}" alt="Media" class="rounded max-w-xs mt-2">
-              {% else %}
-                <i class="fas fa-paperclip"></i> <span class="text-sm">Attachment</span>
-              {% endif %}
-            {% endwith %}
-          </a>
-        </div>
-      {% endif %}
-
-      <small class="text-xs text-gray-400 block mt-1">
-        {{ message.timestamp|date:"M d, H:i" }}
-        <span class="double-tick text-blue-500"><i class="fas fa-check-double"></i></span>
-      </small>
-    </div>
-  {% empty %}
-    <p class="text-center text-gray-300">No messages yet. Be the first to say hello! 🎉</p>
-  {% endfor %}
-   </div>
-
+          <div class="media-preview">
+            <a href="{{ message.media.url }}" target="_blank">
+              {% with file_url=message.media.url|lower %}
+                {% if ".jpg" in file_url or ".jpeg" in file_url or ".png" in file_url or ".gif" in file_url %}
+                  <img src="{{ message.media.url }}" alt="Media">
+                {% else %}
+                  <i class="fas fa-paperclip"></i> Attached File
+                {% endif %}
+              {% endwith %}
+            </a>
+          </div>
+        {% endif %}
 
         <small>
           {{ message.timestamp|date:"M d, H:i" }}
