@@ -194,7 +194,7 @@
   <div class="chat-header"><i class="fas fa-comments text-light"></i> Hostel Chatroom</div>
 
   <div class="chat-messages" id="chatBox">
-    {% for message in messages %}
+    {% for message in chat-messages %}
       <div class="message {% if message.sender.is_staff %}admin{% else %}user{% endif %}">
         <strong><i class="fas fa-user-circle"></i> {{ message.sender.username }}</strong>
         <div>{{ message.content }}</div>
